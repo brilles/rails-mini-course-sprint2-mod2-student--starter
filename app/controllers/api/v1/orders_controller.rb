@@ -29,11 +29,17 @@ module Api
 
       def ship
         @order = Order.find(params[:id])
+        
+        # @shippable = true if the order is not marked as 
+        # shipped and there is at least one product in the order
+        # otherwise false
+        @shippable = @order.status != "shipped" && @order.product
+        if @shippable
+          @order.update(status: "shipped")
 
-        if @order.update(status: "shipped")
-          render json: @order, status: :ok, location: api_v1_order_url(@order)
-        else
-          render json: @order.errors, status: :unprocessable_entity
+          render json: @shippable
+        else 
+          render json: { message: "There was a problem shipping your order." }
         end
       end
     end
