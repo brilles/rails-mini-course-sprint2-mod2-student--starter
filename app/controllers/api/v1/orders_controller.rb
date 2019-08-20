@@ -33,7 +33,7 @@ module Api
         # @shippable = true if the order is not marked as 
         # shipped and there is at least one product in the order
         # otherwise false
-        @shippable = @order.status != "shipped" && @order.product
+        shippable = Order(@order)
         if @shippable
           @order.update(status: "shipped")
 
